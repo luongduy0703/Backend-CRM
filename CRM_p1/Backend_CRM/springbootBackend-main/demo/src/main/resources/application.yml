@@ -1,0 +1,59 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tranluongduy99@gmail.com                       # ← THAY bằng email thật
+    password: qpmz unqz guhr lsud                         # ← THAY bằng mật khẩu ứng dụng (không phải mật khẩu Gmail)
+    protocol: smtp
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: true                     # ← bật debug giúp dễ kiểm tra lỗi gửi mail
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crm_database    # ← Thay đổi tên DB nếu cần
+    driver-class-name: org.postgresql.Driver
+    username: postgres                     # ← Thay bằng username PostgreSQL của bạn
+    password: 123123                      # ← Thay bằng password PostgreSQL của bạn
+
+  jpa:
+    hibernate:
+      ddl-auto: update                     # auto update bảng nếu có thay đổi entity
+    show-sql: true                         # hiện SQL query ở console
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true                   # format đẹp khi log SQL
+    # Đảm bảo data.sql chạy SAU khi JPA tạo bảng (Spring Boot 2.5+ với DB ngoài cần bật)
+    defer-datasource-initialization: true
+
+  # Cho phép Spring Boot luôn xử lý schema.sql/data.sql với PostgreSQL (không phải embedded DB)
+  sql:
+    init:
+      mode: always
+      # Tránh chạy schema.sql mặc dù file rỗng (gây lỗi). Ghi đè để KHÔNG chạy schema.
+      schema-locations: []
+      # Vẫn chạy data.sql để seed dữ liệu ban đầu
+      data-locations:
+        - classpath:/data.sql
+      continue-on-error: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG    # ← xem chi tiết flow security để debug 401
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+jwt:
+  secret: 1a2b3c4d5e6f7g8h9iJkLmNoPqRsTuVw
+  expiration: 86400000
+  
+cors:
+  allowed-origins: >
+    http://localhost:3000,http://127.0.0.1:3000
+
